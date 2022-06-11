@@ -1,9 +1,11 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const mongoose = require("mongoose");
 const { engine } = require("express-handlebars");
 const morgan = require("morgan");
 const passport = require("passport");
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const connectDB = require("./config/db");
 
 const app = express();
@@ -56,6 +58,7 @@ app.use(
     secret: "secretkeeper",
     resave: false, // means don't re-save the session if nothing modified
     saveUninitialized: false, // means don't create a session until something is stored
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }), // storing session in DB so that server-restart doesn't log user out.
   })
 );
 

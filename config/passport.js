@@ -24,14 +24,14 @@ module.exports = function (passport) {
           image: profile.photos[0].value,
         };
         try {
-          // we want to store this use in the database, but first check if the use exists or not
+          // we want to store this user in the database, but first check if the user exists or not
           let user = await User.findOne({ googleId: profile.id }); // in DB, find a document whose googleId === current profile.id
 
           if (user) {
             // call our google auth callback
             done(null, user); // null represents the value of error
           } else {
-            // create newUser and call the google auth callback
+            // create newUser and call the google auth callback 'done'
             user = await User.create(newUser);
             done(null, user);
           }
@@ -44,7 +44,7 @@ module.exports = function (passport) {
 
   passport.serializeUser(function (user, cb) {
     process.nextTick(function () {
-      cb(null, { id: user.id, username: user.username, name: user.name });
+      cb(null, user);
     });
   });
 

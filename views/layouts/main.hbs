@@ -20,6 +20,10 @@
     <title>SecretKeeper</title>
   </head>
   <body>
+
+    {{!-- Insert the header partials here --}}
+    {{> _header}}
+
     {{! wherever we want to output the views, which is obviously in the body, we mention it like }}
     <div class="container">
       {{{body}}}
@@ -29,5 +33,11 @@
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"
     ></script>
+    
+    {{!-- initialising the hamburger icon for it to work --}}
+    <script>
+      M.Sidenav.init(document.querySelector('.sidenav'))
+    </script>
+
   </body>
 </html>

@@ -5,7 +5,7 @@ const router = express.Router();
 
 // description- auth with google
 // route-        GET /auth/google
-router.get("/google", passport.authenticate("google", { scope: ["profile"] }));
+router.get("/google", passport.authenticate("google", { scope: ["profile"] })); // bcz 'profile' contains all the user data
 
 // description- google auth callback
 // route-       GET /auth/google/callback
@@ -19,5 +19,18 @@ router.get(
     res.redirect("/dashboard");
   }
 );
+
+// description-  logout user
+// route-        /auth/logout
+router.get("/logout", (req, res) => {
+  // logout() comes with passportJS & just recently it has become asynchronous (i.e it requires a callback now)
+  req.logout(function (err) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.redirect("/");
+    }
+  });
+});
 
 module.exports = router;
