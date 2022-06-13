@@ -21,8 +21,9 @@
   </head>
   <body>
 
-    {{!-- Insert the header partials here --}}
+    {{!-- Insert the header & button partials here --}}
     {{> _header}}
+    {{> _add_btn}}
 
     {{! wherever we want to output the views, which is obviously in the body, we mention it like }}
     <div class="container">
@@ -37,6 +38,10 @@
     {{!-- initialising the hamburger icon for it to work --}}
     <script>
       M.Sidenav.init(document.querySelector('.sidenav'))
+    </script>
+    {{!-- initialising the stories add form select menu for it to work --}}
+    <script>
+      M.FormSelect.init(document.querySelector('#status'))
     </script>
 
   </body>

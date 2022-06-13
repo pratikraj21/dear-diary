@@ -75,6 +75,8 @@ app.use(passport.session()); // for it to work, we use express-session initialis
 app.use("/", require("./routes/index"));
 // authentication routes are handled by routes/auth.js
 app.use("/auth", require("./routes/auth"));
+// stories routes are handled by routes/stories.js
+app.use("/stories", require("./routes/stories"));
 
 app.listen(
   PORT,
