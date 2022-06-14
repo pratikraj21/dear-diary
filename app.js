@@ -10,6 +10,11 @@ const connectDB = require("./config/db");
 
 const app = express();
 
+// body parser middleware
+app.use(express.urlencoded({ extended: false }));
+// not needed in our app but still good to have
+app.use(express.json());
+
 app.use(express.static("public"));
 
 /* ***************************
@@ -42,13 +47,21 @@ if (process.env.NODE_ENV === "development") {
 }
 
 /* ***************************
+------HANDLEBARS-HELPERS------
+**************************** */
+const { formatDate } = require("./helpers/hbs");
+
+/* ***************************
 ------HANDLEBARS-CONFIG------
 **************************** */
 // using express-handlebars as the view engine. Will look for views inside "views" folder by default
 app.set("view engine", ".hbs");
 // to use .hbs extension rather than .handlebars & setting defaultLayout to main.hbs
 // which will wrap around all other .hbs files so that we don't have to repeat same code
-app.engine(".hbs", engine({ defaultLayout: "main", extname: ".hbs" }));
+app.engine(
+  ".hbs",
+  engine({ helpers: { formatDate }, defaultLayout: "main", extname: ".hbs" })
+);
 
 /* ***************************
 ------EXPRESS-SESSION-MIDDLEWARE------

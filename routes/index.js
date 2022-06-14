@@ -20,7 +20,7 @@ router.get("/", ensureGuest, (req, res) => {
 // we are using our own middleware to protect the '/dashboard' route from un-logged users
 router.get("/dashboard", ensureAuth, async (req, res) => {
   try {
-    const stories = await Story.find({ user: req.user.id }).lean(); // lean() converts mongoose model to plain JS object to be rendered properly in browsers
+    const stories = await Story.find({ user: req.user._id }).lean(); // lean() converts mongoose model to plain JS object to be rendered properly in browsers
     // using render() bcz we are using templating engines to generate dynamic html (handlebars)
     // dashboard view will be looked inside the "views" folder by default
     res.render("dashboard", {

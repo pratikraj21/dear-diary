@@ -34,14 +34,21 @@
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"
     ></script>
+
+    {{!-- CKeditor CDN --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.19.0/ckeditor.js" integrity="sha512-tjxUra6WjSA8H5+nC7G61SVqEXj1e958LdR4N8BGZeRx9tObm/YhsrUzY6tH4EuHQyZqOyu317pgV7f8YPFoAQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     
     {{!-- initialising the hamburger icon for it to work --}}
+    {{!-- initialising the stories add form select menu for it to work --}}
+    {{!-- initialising ck-editor. replace('body') bcz textarea in add.hbs has a "name=body" --}}
     <script>
       M.Sidenav.init(document.querySelector('.sidenav'))
-    </script>
-    {{!-- initialising the stories add form select menu for it to work --}}
-    <script>
+
       M.FormSelect.init(document.querySelector('#status'))
+
+      CKEDITOR.replace('body', {
+        plugins: 'wysiwygarea, toolbar, basicstyles, link'
+      })
     </script>
 
   </body>

@@ -17,7 +17,8 @@
         <tr>
           {{! Since we are looping "stories", no need to write stories._id/stories.title/stories.status}}
           <td><a href="/stories/{{_id}}">{{title}}</a></td>
-          <td>{{createdAt}}</td>
+          {{! Calling the formatDate "Helper" passing date, format as the parameter }}
+          <td>{{formatDate createdAt "MMMM Do YYYY, h:mm:ss a"}}</td>
           <td><span class="dash-status">{{status}}</span></td>
           <td></td>
         </tr>
