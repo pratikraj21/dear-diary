@@ -49,7 +49,13 @@ if (process.env.NODE_ENV === "development") {
 /* ***************************
 ------HANDLEBARS-HELPERS------
 **************************** */
-const { formatDate } = require("./helpers/hbs");
+const {
+  formatDate,
+  stripTags,
+  truncate,
+  editIcon,
+  select,
+} = require("./helpers/hbs");
 
 /* ***************************
 ------HANDLEBARS-CONFIG------
@@ -60,7 +66,11 @@ app.set("view engine", ".hbs");
 // which will wrap around all other .hbs files so that we don't have to repeat same code
 app.engine(
   ".hbs",
-  engine({ helpers: { formatDate }, defaultLayout: "main", extname: ".hbs" })
+  engine({
+    helpers: { formatDate, stripTags, truncate, editIcon, select },
+    defaultLayout: "main",
+    extname: ".hbs",
+  })
 );
 
 /* ***************************
@@ -80,6 +90,15 @@ app.use(
 **************************** */
 app.use(passport.initialize());
 app.use(passport.session()); // for it to work, we use express-session initialised above
+
+/* ***************************
+------SET-GLOBAL-VAR------
+**************************** */
+app.use(function (req, res, next) {
+  // setting the logged-in user coming in req.user from passport authentication middleware, for using it in the index.hbs file
+  res.locals.user = req.user || null;
+  next();
+});
 
 /* ***************************
 ------ROUTES------

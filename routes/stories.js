@@ -20,6 +20,7 @@ router.post("/", ensureAuth, async (req, res) => {
   //   process the Form data coming in the req.body (using body-parser)
   try {
     // form req.body doesn't contain a user to associate the story with. But user is part of the Story schema! So, set it to user-id from User schema
+    console.log(req);
     req.body.user = req.user._id;
     await Story.create(req.body); // storing in DB
     res.redirect("/dashboard");
@@ -46,6 +47,25 @@ router.get("/", ensureAuth, async (req, res) => {
   } catch (err) {
     console.log(err);
     res.render("error/500");
+  }
+});
+
+// description- show edit story page
+// route-        GET /stories/edit/:id
+// we are using our own middleware to protect the '/stories/edit/:id' route from un-logged users
+router.get("/edit/:id", ensureAuth, async (req, res) => {
+  // get the story whose _id prop matches the id from the queryString & use lean() to convert it to JS object to pass to our edit.hbs template
+  const story = await Story.findOne({ _id: req.params.id }).lean();
+
+  if (!story) {
+    return res.render("error/404");
+  }
+
+  // also redirect the user if its not the story owner (i.e protecting edit route from non-owners)
+  if (story.user != req.user._id) {
+    res.redirect("/stories");
+  } else {
+    res.render("stories/edit", { story });
   }
 });
 

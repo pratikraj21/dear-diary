@@ -6,12 +6,14 @@
     <div class="col s12 m4">
       <div class="card">
         <div class="card-image">
-          {{! toDo: editIcon }}
+          {{! editIcon: (1) user => user of each story which we are looping through. (2) ../user means go up a level, out of the stories loop and then grab the user which will give the logged-in user (but since we haven't passed the loggedin user info anywhere in the index.hbs, we need to store in globally in app.js) (3) passing story._id but bcz looping through stories array, can directly mention _id (4) floating has a default value of true already. So no need to pass from here}}
+          {{{editIcon user ../user _id}}}
         </div>
         <div class="card-content center-align">
           {{! no need to write stories.title since we are looping through stories already }}
           <h5>{{title}}</h5>
-          <p>{{body}}</p>
+          {{! using stripTags and truncate helpers coming from hbs.js & app.js }}
+          <p>{{stripTags (truncate body 180)}}</p>
           <br />
           <div class="chip">
             {{! we have access to "user" here because of the relationship we created in the Story model }}
