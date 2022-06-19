@@ -50,22 +50,107 @@ router.get("/", ensureAuth, async (req, res) => {
   }
 });
 
+// description- show single story
+// route-        GET /stories/:id
+// we are using our own middleware to protect the '/stories/add' route from un-logged users
+router.get("/:id", ensureAuth, async (req, res) => {
+  try {
+    let story = await Story.findById(req.params.id).populate("user").lean();
+
+    if (!story) {
+      return res.render("error/404");
+    }
+
+    res.render("stories/show", { story });
+  } catch (err) {
+    console.error(err);
+    res.render("error/404");
+  }
+});
+
 // description- show edit story page
 // route-        GET /stories/edit/:id
 // we are using our own middleware to protect the '/stories/edit/:id' route from un-logged users
 router.get("/edit/:id", ensureAuth, async (req, res) => {
-  // get the story whose _id prop matches the id from the queryString & use lean() to convert it to JS object to pass to our edit.hbs template
-  const story = await Story.findOne({ _id: req.params.id }).lean();
+  try {
+    // get the story whose _id prop matches the id from the queryString & use lean() to convert it to JS object to pass to our edit.hbs template
+    const story = await Story.findOne({ _id: req.params.id }).lean();
 
-  if (!story) {
-    return res.render("error/404");
+    if (!story) {
+      return res.render("error/404");
+    }
+
+    // also redirect the user if its not the story owner (i.e protecting edit route from non-owners)
+    if (story.user != req.user._id) {
+      res.redirect("/stories");
+    } else {
+      res.render("stories/edit", { story });
+    }
+  } catch (err) {
+    console.error(err);
+    res.render("error/500");
   }
+});
 
-  // also redirect the user if its not the story owner (i.e protecting edit route from non-owners)
-  if (story.user != req.user._id) {
-    res.redirect("/stories");
-  } else {
-    res.render("stories/edit", { story });
+// description- Update Story
+// route-        PUT /stories/:id
+// we are using our own middleware to protect the '/stories/add' route from un-logged users
+router.put("/:id", ensureAuth, async (req, res) => {
+  try {
+    let story = await Story.findById(req.params.id).lean();
+    if (!story) {
+      return res.render("error/404");
+    }
+
+    // also redirect the user if its not the story owner (i.e protecting edit route from non-owners)
+    if (story.user != req.user._id) {
+      res.redirect("/stories");
+    } else {
+      // find the story with _id (in DB) === id coming in req.params.id, and update the content with req.body
+      story = await Story.findOneAndUpdate({ _id: req.params.id }, req.body, {
+        new: true, // return the document after update was applied
+        runValidators: true, // making sure that the mongoose fields are valid
+      });
+
+      res.redirect("/dashboard");
+    }
+  } catch (err) {
+    console.error(err);
+    res.render("error/500");
+  }
+});
+
+// description- delete a particular story
+// route-        DELETE /stories/:id
+// we are using our own middleware to protect the '/stories/add' route from un-logged users
+router.delete("/:id", ensureAuth, async (req, res) => {
+  try {
+    await Story.remove({ _id: req.params.id });
+    res.redirect("/dashboard");
+  } catch (err) {
+    console.error(err);
+    res.render("error/500");
+  }
+});
+
+// description- all stories of a user
+// route-        GET /stories/user/:userId
+// we are using our own middleware to protect the '/stories/add' route from un-logged users
+router.get("/user/:userId", ensureAuth, async (req, res) => {
+  try {
+    // find the public stories of the user where user key in DB has a value === req.params.userId
+    const stories = await Story.find({
+      user: req.params.userId,
+      status: "public",
+    })
+      .populate("user")
+      .lean();
+
+    // call the index.js OF public stories, but this time pass only this 'stories' variable created above
+    res.render("stories/index", { stories });
+  } catch (err) {
+    console.error(err);
+    res.render("error/500");
   }
 });
 

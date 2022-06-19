@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const { engine } = require("express-handlebars");
 const morgan = require("morgan");
+const methodOverride = require("method-override");
 const passport = require("passport");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
@@ -36,6 +37,24 @@ require("./config/passport")(passport);
 ------DATABASE-CONNECTION------
 **************************** */
 connectDB();
+
+/* ***************************
+------METHOD-OVERRIDE-MIDDLEWARE------
+**************************** */
+// This is help us insert an hidden input element in the form making a POST request.
+// (HTML forms can make only GET & POST)
+// We can then use this input element to over-ride the POST by PUT or DELETE too.
+
+app.use(
+  methodOverride(function (req, res) {
+    if (req.body && typeof req.body === "object" && "_method" in req.body) {
+      // look in urlencoded POST bodies and delete it
+      let method = req.body._method;
+      delete req.body._method;
+      return method;
+    }
+  })
+);
 
 /* ***************************
 ------MORGAN-MIDDLEWARE------
