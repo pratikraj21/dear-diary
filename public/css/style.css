@@ -1,3 +1,11 @@
+body {
+  background-image: linear-gradient(
+    109.6deg,
+    rgba(156, 252, 248, 1) 11.2%,
+    rgba(110, 123, 251, 1) 91.1%
+  );
+}
+
 p {
   /* use !important to overwrite styling by materialize */
   margin: 10px 0 !important;
@@ -20,4 +28,12 @@ p {
 
 .img-small {
   width: 180px;
+}
+
+.bluish {
+  background-color: #00b2e7;
+}
+
+.bluish-text {
+  color: #00b2e7 !important;
 }
